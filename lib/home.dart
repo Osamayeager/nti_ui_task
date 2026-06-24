@@ -201,19 +201,19 @@ class Home extends StatelessWidget {
               const SizedBox(height: 12),
 
               // Rooms List Stack
-              _buildRoomCard(
+              buildRoomCard(
                 AppAssets.livingroomImage,
                 'Living Room',
                 '4 devices · 22°C',
               ),
               const SizedBox(height: 12),
-              _buildRoomCard(
+              buildRoomCard(
                 AppAssets.bedroomImage,
                 'Bedroom',
                 '3 devices · 20°C',
               ),
               const SizedBox(height: 12),
-              _buildRoomCard(
+              buildRoomCard(
                 AppAssets.kitchenroomImage,
                 'Kitchen',
                 '5 devices · 24°C',
@@ -289,7 +289,7 @@ class Home extends StatelessWidget {
 
   
 
-  Widget _buildRoomCard(String imagePath, String title, String subtitle) {
+  Widget buildRoomCard(String imagePath, String title, String subtitle) {
     return Container(
       height: 82,
       decoration: BoxDecoration(
