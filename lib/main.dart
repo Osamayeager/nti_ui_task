@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application/core/util/app_routes.dart';
 import 'package:flutter_application/features/auth/login.dart';
-//import 'package:flutter_application/settings.dart';
+import 'package:flutter_application/features/auth/sign_up.dart';
+import 'package:flutter_application/features/home/home.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -19,13 +21,15 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         textTheme: GoogleFonts.dmSansTextTheme(Theme.of(context).textTheme),
       ),
-      home: Login(),
-      // initialRoute: '/',
-      // routes: {
-      //   '/':(context) =>  Analytics(),
-      //   //
-      //   AppRoutes.settingsPage:(context) =>  Settings(),
-      // },
+      initialRoute: AppRoutes.loginPage,
+      routes: {
+        AppRoutes.loginPage: (context) => const Login(),
+        AppRoutes.signUpPage: (context) => const SignUp(),
+        AppRoutes.homePage: (context) => const Home(initialIndex: 0),
+        AppRoutes.analyticsPage: (context) => const Home(initialIndex: 1),
+        AppRoutes.schedulePage: (context) => const Home(initialIndex: 2),
+        AppRoutes.settingsPage: (context) => const Home(initialIndex: 3),
+      },
     );
   }
 }

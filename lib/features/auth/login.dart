@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application/core/util/app_colors.dart';
+import 'package:flutter_application/core/util/app_routes.dart';
 import 'package:flutter_application/features/home/home.dart';
 import 'package:flutter_application/features/widgets/custom_inupt_field.dart';
 import 'package:flutter_application/features/widgets/primary_button.dart';
@@ -17,10 +18,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   void _onSignIn() {
     // Navigate directly to Main Navigation Screen without backend auth
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => Home()),
-    );
+    Navigator.pushReplacementNamed(context, AppRoutes.homePage);
   }
 
   @override
@@ -91,10 +89,7 @@ class _LoginState extends State<Login> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => SignUp()),
-                          );
+                          Navigator.pushNamed(context, AppRoutes.signUpPage);
                         },
                         child: Text(
                           'Sign Up',

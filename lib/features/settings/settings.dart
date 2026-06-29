@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
@@ -37,54 +36,7 @@ class Settings extends StatelessWidget {
         'isSwitchedOn': false, // The bottom switch is OFF in the design
       },
     ];
-    
-    return Scaffold(
-      backgroundColor: Color(0xFFF5F5F0),
-      appBar: AppBar(
-        backgroundColor: Color(0xFFF5F5F0),
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 22.0, bottom: 8, top: 8),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            child: Icon(Icons.menu, size: 18, color: Colors.black),
-          ),
-        ),
-        title: Text(
-          'Settings',
-          style: GoogleFonts.dmSans(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-            color: Colors.black,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 22.0),
-            child: Container(
-              width: 36,
-              height: 36,
-              alignment: Alignment.center,
-              decoration: const BoxDecoration(
-                color: Color(0xff4A7C6B),
-                shape: BoxShape.circle,
-              ),
-              child: Text(
-                'RB',
-                style: GoogleFonts.dmSans(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.6,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
+    return SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Column(
@@ -322,31 +274,6 @@ class Settings extends StatelessWidget {
             ],
           ),
         ),
-      ),
-      // Place this directly inside your Scaffold, right after your body closes!
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 20.0),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
-          ),
-        ),
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Icon(Icons.home_outlined, color: Color(0xff8A8A80), size: 28),
-            Icon(Icons.bar_chart, color: Color(0xff8A8A80), size: 28),
-            Icon(
-              Icons.calendar_today_outlined,
-              color: Color(0xff8A8A80),
-              size: 26,
-            ),
-            Icon(Icons.settings_outlined, color: Color(0xff8A8A80), size: 28),
-          ],
-        ),
-      ),
-    );
+      );
   }
 }

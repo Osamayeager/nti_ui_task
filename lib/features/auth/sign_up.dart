@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application/core/util/app_colors.dart';
+import 'package:flutter_application/core/util/app_routes.dart';
 import 'package:flutter_application/core/util/app_typography.dart';
 import 'package:flutter_application/features/widgets/custom_inupt_field.dart';
 import 'package:flutter_application/features/widgets/primary_button.dart';
@@ -20,9 +21,9 @@ class _SignUpScreenState extends State<SignUp> {
   bool _agreedToTerms = true;
 
   void _onSignUp() {
-    Navigator.pushAndRemoveUntil(
+    Navigator.pushNamedAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => Home()),
+      AppRoutes.homePage,
       (route) => false,
     );
   }

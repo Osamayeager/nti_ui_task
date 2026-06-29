@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application/features/analytics/model/chart_data.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class Analytics extends StatelessWidget {
@@ -22,7 +21,7 @@ class Analytics extends StatelessWidget {
     // Since the highest value is 8.1, 10.0 is a clean maximum.
     final double maxDailyValue = 10.0;
 
-    final Color fadedGreen = Colors.white.withValues(alpha: 0.3);
+    final Color fadedGreen = Colors.white.withOpacity(0.3);
     final List<ChartData> chartData = [
       ChartData('1', 20, fadedGreen),
       ChartData('2', 35, fadedGreen),
@@ -35,52 +34,7 @@ class Analytics extends StatelessWidget {
       ChartData('9', 45, fadedGreen),
       ChartData('10', 60, Colors.white), // The highlighted active month
     ];
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFFF5F5F0),
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 22.0, bottom: 8, top: 8),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            child: Icon(Icons.menu, size: 18, color: Colors.black),
-          ),
-        ),
-        title: Text(
-          'Analytics',
-          style: GoogleFonts.dmSans(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-            color: Colors.black,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 22.0),
-            child: Container(
-              width: 36,
-              height: 36,
-              alignment: Alignment.center,
-              decoration: const BoxDecoration(
-                color: Color(0xff4A7C6B),
-                shape: BoxShape.circle,
-              ),
-              child: Text(
-                'RB',
-                style: GoogleFonts.dmSans(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.6,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
+    return SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 22.0),
           child: Column(
@@ -152,9 +106,7 @@ class Analytics extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(
-                          alpha: 0.15,
-                        ), // Cleaner transparency
+                        color: Colors.white.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(24),
                       ),
                       child: const Text(
@@ -294,7 +246,7 @@ class Analytics extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }
+

@@ -1,12 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application/core/util/app_colors.dart';
 import 'package:flutter_application/core/util/app_assets.dart';
+import 'package:flutter_application/features/analytics/analytics.dart';
+import 'package:flutter_application/features/schedule/schedule.dart';
+import 'package:flutter_application/features/settings/settings.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Home extends StatelessWidget {
-  Home({super.key});
+class Home extends StatefulWidget {
+  final int initialIndex;
+  const Home({super.key, this.initialIndex = 0});
 
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  late PageController _pageController;
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+    _pageController = PageController(initialPage: _currentIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _onNavItemTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+    _pageController.jumpToPage(index);
+  }
+
+  String get _appBarTitle {
+    switch (_currentIndex) {
+      case 0:
+        return 'My Home';
+      case 1:
+        return 'Analytics';
+      case 2:
+        return 'Schedule';
+      case 3:
+        return 'Settings';
+      default:
+        return 'My Home';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +85,7 @@ class Home extends StatelessWidget {
           ),
         ),
         title: Text(
-          'My Home',
+          _appBarTitle,
           style: GoogleFonts.dmSans(
             fontWeight: FontWeight.w600,
             fontSize: 14,
@@ -112,6 +160,7 @@ class Home extends StatelessWidget {
               title: const Text('My Home'),
               onTap: () {
                 Navigator.pop(context);
+                _onNavItemTapped(0);
               },
             ),
             ListTile(
@@ -119,6 +168,15 @@ class Home extends StatelessWidget {
               title: const Text('Analytics'),
               onTap: () {
                 Navigator.pop(context);
+                _onNavItemTapped(1);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.calendar_today, color: AppColors.primary),
+              title: const Text('Schedule'),
+              onTap: () {
+                Navigator.pop(context);
+                _onNavItemTapped(2);
               },
             ),
             ListTile(
@@ -126,12 +184,62 @@ class Home extends StatelessWidget {
               title: const Text('Settings'),
               onTap: () {
                 Navigator.pop(context);
+                _onNavItemTapped(3);
               },
             ),
           ],
         ),
       ),
-      body: SingleChildScrollView(
+      body: PageView.builder(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        itemCount: 4,
+        itemBuilder: (context, index) {
+          switch (index) {
+            case 0:
+              return _buildHomeContent();
+            case 1:
+              return const Analytics();
+            case 2:
+              return const ScheduleScreen();
+            case 3:
+              return const Settings();
+            default:
+              return _buildHomeContent();
+          }
+        },
+      ),
+      bottomNavigationBar: Container(
+        height: 72,
+        decoration: const BoxDecoration(
+          color: AppColors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Color(0x05000000),
+              blurRadius: 10,
+              offset: Offset(0, -4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            buildNavItem(0, Icons.home_filled, _currentIndex == 0),
+            buildNavItem(1, Icons.bar_chart_rounded, _currentIndex == 1),
+            buildNavItem(2, Icons.calendar_today_rounded, _currentIndex == 2),
+            buildNavItem(3, Icons.settings_rounded, _currentIndex == 3),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHomeContent() {
+    return SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 16.0),
           child: Column(
@@ -165,9 +273,28 @@ class Home extends StatelessWidget {
                   height: 1.4,
                 ),
               ),
-
-              const SizedBox(height: 20),           
-              const SizedBox(height: 24),
+              const SizedBox(height: 44),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  TempretureCard(
+                    svgAssetPath: 'assets/icons/thermostat_icon.svg',
+                    tempertureDegree: "22°C",
+                    tempertureType: "inside",
+                  ),
+                  TempretureCard(
+                    svgAssetPath: 'assets/icons/sun_icon.svg',
+                    tempertureDegree: '18',
+                    tempertureType: 'Outside',
+                  ),
+                  TempretureCard(
+                    svgAssetPath: 'assets/icons/water_dorp_icon.svg',
+                    tempertureDegree: '58%',
+                    tempertureType: 'Humidity',
+                  ),
+                ],
+              ),
+              SizedBox(height: 44),
 
               // Rooms Section Header
               Row(
@@ -252,39 +379,12 @@ class Home extends StatelessWidget {
               const SizedBox(height: 12),
 
               // Devices Grid
-            
-
               const SizedBox(height: 20),
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: Container(
-        height: 72,
-        decoration: const BoxDecoration(
-          color: AppColors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Color(0x05000000),
-              blurRadius: 10,
-              offset: Offset(0, -4),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            buildNavItem(0, Icons.home_filled, true),
-            buildNavItem(1, Icons.bar_chart_rounded, false),
-            buildNavItem(2, Icons.calendar_today_rounded, false),
-            buildNavItem(3, Icons.settings_rounded, false),
-          ],
-        ),
-      ),
-    );
+      );
   }
-
-  
 
   Widget buildRoomCard(String imagePath, String title, String subtitle) {
     return Container(
@@ -349,33 +449,74 @@ class Home extends StatelessWidget {
     );
   }
 
-
-
-
-
-
-
   Widget buildNavItem(int index, IconData icon, bool isActive) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            color: isActive ? AppColors.primary : AppColors.textSecondary,
-            size: 20,
-          ),
-          const SizedBox(height: 4),
-          Container(
-            width: 4,
-            height: 4,
-            decoration: BoxDecoration(
-              color: isActive ? AppColors.primary : Colors.transparent,
-              shape: BoxShape.circle,
+    return GestureDetector(
+      onTap: () => _onNavItemTapped(index),
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: isActive ? AppColors.primary : AppColors.textSecondary,
+              size: 20,
             ),
-          ),
-        ],
+            const SizedBox(height: 4),
+            Container(
+              width: 4,
+              height: 4,
+              decoration: BoxDecoration(
+                color: isActive ? AppColors.primary : Colors.transparent,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TempretureCard extends StatelessWidget {
+  const TempretureCard({
+    super.key,
+    required this.svgAssetPath,
+    required this.tempertureDegree,
+    required this.tempertureType,
+  });
+  final String svgAssetPath;
+  final String tempertureType;
+  final String tempertureDegree;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 103,
+      height: 86,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            SvgPicture.asset(svgAssetPath, width: 20, height: 20),
+            Text(
+              tempertureDegree,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            Text(
+              tempertureType,
+              style: TextStyle(color: Color(0xff8A8A80), fontSize: 10),
+            ),
+          ],
+        ),
       ),
     );
   }
