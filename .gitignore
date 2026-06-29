@@ -11,6 +11,7 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
+.refactoring_guide.txt
 
 # IntelliJ related
 *.iml

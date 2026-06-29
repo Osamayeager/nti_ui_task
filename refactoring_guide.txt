@@ -1,0 +1,109 @@
+========================================================================
+GUIDE: REFACTORING FLUTTER CODE WITH CLEAN CODE & DESIGN PRINCIPLES
+========================================================================
+
+This document outlines the step-by-step architectural plan to refactor the current smart home codebase (specifically `home.dart` and `settings.dart`) to align with Clean Code, Clean Architecture, and SOLID principles. 
+
+No actual project code is modified or implemented in this refactoring guide.
+
+---
+
+SECTION 1: KEY CODE SMELLS & DESIGN ISSUES IDENTIFIED
+------------------------------------------------------
+1. Single Responsibility Principle (SRP) Violations:
+   - Both `Home` and `Settings` classes are monoliths. They handle data declaration, layout rendering, styling, helper widget generation, and navigation logic.
+2. In-Build Data Declaration:
+   - In `settings.dart`, lists like `accountItems` and `preferenceItems` are declared inside the `build` method. They are re-allocated and re-created in memory every time Flutter rebuilds the widget tree.
+3. Magic Values & Hardcoded Styles:
+   - Many colors (e.g., `Color(0xFFF5F5F0)`, `Color(0xff2D4A3E)`) are hardcoded inline in `settings.dart` rather than using `AppColors`.
+   - Text styles and fonts (`GoogleFonts.dmSans`) are declared inline repeatedly with hardcoded sizes, weights, and colors.
+4. Widget Helper Methods Anti-Pattern:
+   - Methods like `buildRoomCard` and `buildNavItem` are defined inside the `Home` class. 
+   - In Flutter, helper methods do not have their own Element context. This prevents Flutter from caching/optimizing their rebuilds, causing the entire widget to rebuild even if only a small part changes.
+5. Code Duplication:
+   - Both `Home` and `Settings` implement their own separate custom bottom navigation bars with duplicate layouts.
+6. Folder Structure Inconsistencies:
+   - Common widgets folder (`lib/core/widgets`) is empty, and there is no distinction between UI widgets, data models, and business logic inside the feature directories.
+
+---
+
+SECTION 2: STEP-BY-STEP REFACTORING PLAN
+-----------------------------------------
+
+STEP 1: CENTRALIZING STYLES, COLORS, AND TEXT THEMES
+----------------------------------------------------
+- GOAL: Eliminate magic numbers/colors and enforce DRY (Don't Repeat Yourself).
+- ACTIONS:
+  1. Inspect every inline color hex code in `settings.dart` (such as `Color(0xFFF5F5F0)` and `Color(0xff2D4A3E)`) and migrate them into `AppColors` under `lib/core/util/app_colors.dart`.
+  2. Create a global text theme helper (e.g., `AppTextTheme`) or define custom text styles inside a central style class. This replaces inline `GoogleFonts.dmSans` / `TextStyle` calls with standard, named text style constants.
+
+STEP 2: EXTRACTING THE DATA LAYER (MODELS)
+------------------------------------------
+- GOAL: Represent business concepts as structured Dart classes instead of loose Map objects.
+- ACTIONS:
+  1. Define a model class for Room information containing fields for the image path, title, and device count/temperature.
+  2. Define a model class for Setting/Preference items containing fields for the icon, title, subtitle, and an optional toggle state.
+  3. Place these models in a new `models/` subdirectory inside each feature folder (e.g., `lib/features/home/models/`).
+
+STEP 3: DECOUPLING PRESENTATION FROM DATA (SEPARATION OF CONCERNS)
+------------------------------------------------------------------
+- GOAL: Move static data and dynamic state logic out of the presentation (UI) files.
+- ACTIONS:
+  1. Remove `accountItems` and `preferenceItems` from the `build` method in `settings.dart`.
+  2. Move these mock data lists into a separate Controller, Repository, or static data provider class.
+  3. Ensure that the UI only reads the data from this external provider rather than defining it.
+
+STEP 4: REFACTORING HELPER METHODS TO INDEPENDENT WIDGET CLASSES
+-----------------------------------------------------------------
+- GOAL: Improve Flutter's build performance and widget reuse.
+- ACTIONS:
+  1. Convert the `buildRoomCard(...)` helper method in `home.dart` into a standalone class (e.g., `RoomCardTile`) extending `StatelessWidget`. Pass configuration values through its constructor.
+  2. Convert the `buildNavItem(...)` helper method in `home.dart` into a standalone `StatelessWidget`.
+  3. Move these newly created widget classes into a dedicated `widgets/` folder inside the respective feature module (e.g., `lib/features/home/widgets/`).
+
+STEP 5: EXTRACTING COMMON SHARED COMPONENTS
+-------------------------------------------
+- GOAL: Eliminate layout duplication and increase reusability.
+- ACTIONS:
+  1. Create a unified custom navigation bar widget (e.g., `AppBottomNavigationBar`) in the `lib/core/widgets/` folder.
+  2. Replace the duplicate container-based navigation bar code blocks in both `home.dart` and `settings.dart` with a call to this shared widget.
+  3. Do the same for the App Drawer if it is used across multiple screens.
+
+STEP 6: SEPARATING INTERACTION & STATE LOGIC
+--------------------------------------------
+- GOAL: Implement proper state management to make UI components reactive.
+- ACTIONS:
+  1. Implement a state controller (using ValueNotifier, Provider, BLoC, or Riverpod) to handle interactive states such as toggling the "Dark Mode" switch in the preferences section.
+  2. Connect the `Switch` widget's `onChanged` parameter in `settings.dart` to a method in the state controller, instead of leaving it empty.
+  3. Move screen-to-screen navigation calls (e.g., `Navigator.pushNamed`) out of deep widget trees and delegate them to a routing utility or central handler.
+
+STEP 7: RESTRUCTURING FEATURE DIRECTORIES
+-----------------------------------------
+- GOAL: Achieve clean folder structure for maintainability and scalability.
+- ACTIONS:
+  - Organize each feature module using the following clean layout:
+    ```
+    lib/features/<feature_name>/
+    ├── models/
+    │   └── (e.g., room_model.dart)
+    ├── widgets/
+    │   └── (e.g., room_card_tile.dart)
+    ├── controller/ or bloc/
+    │   └── (e.g., settings_controller.dart)
+    └── screen/
+        └── (e.g., home_screen.dart)
+    ```
+
+---
+
+SECTION 3: CLEAN DESIGN PRINCIPLES ACHIEVED
+---------------------------------------------
+1. Single Responsibility Principle (SRP):
+   - Screens only render layouts. Widgets only display specific UI blocks. Models only define data schemas. Controllers only handle business logic.
+2. Don't Repeat Yourself (DRY):
+   - Unified colors, text themes, and custom shared widgets prevent repeating identical styling and widget code in different screens.
+3. Performance Optimization:
+   - Converting helper methods to stateless widget classes leverages Flutter's widget-level optimization, reducing unnecessary layout computations and redraws during builds.
+4. Scalability:
+   - The modular directory structure allows new features, screens, and settings to be added with minimal changes to existing classes.
+========================================================================

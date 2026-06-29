@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application/app_colors.dart';
-import 'package:flutter_application/app_assets.dart';
+import 'package:flutter_application/core/util/app_colors.dart';
+import 'package:flutter_application/core/util/app_assets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -277,10 +274,10 @@ class Home extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildNavItem(0, Icons.home_filled, true),
-            _buildNavItem(1, Icons.bar_chart_rounded, false),
-            _buildNavItem(2, Icons.calendar_today_rounded, false),
-            _buildNavItem(3, Icons.settings_rounded, false),
+            buildNavItem(0, Icons.home_filled, true),
+            buildNavItem(1, Icons.bar_chart_rounded, false),
+            buildNavItem(2, Icons.calendar_today_rounded, false),
+            buildNavItem(3, Icons.settings_rounded, false),
           ],
         ),
       ),
@@ -358,7 +355,7 @@ class Home extends StatelessWidget {
 
 
 
-  Widget _buildNavItem(int index, IconData icon, bool isActive) {
+  Widget buildNavItem(int index, IconData icon, bool isActive) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
